@@ -60,8 +60,7 @@ const AdminBookings: React.FC = () => {
   useEffect(() => {
     const fetchRates = async () => {
       try {
-        const apiKey = import.meta.env.VITE_OPENEXCHANGERATES_API_KEY || '';
-        const res = await fetch(`https://openexchangerates.org/api/latest.json?app_id=${apiKey}&symbols=THB,USD,EUR`);
+        const res = await fetch('https://api.exchangerate.host/latest?base=THB&symbols=THB,USD,EUR');
         const data = await res.json();
         if (data && data.rates) {
           setExchangeRates({
