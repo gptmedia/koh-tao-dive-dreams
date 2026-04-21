@@ -211,7 +211,7 @@ const       BookingPage: React.FC = () => {
 
       let persisted = false;
       try {
-        const dbRes = await fetch(`${import.meta.env.VITE_API_URL}/api/bookings`, {
+        const dbRes = await fetch(`${import.meta.env.VITE_API_URL}/api/sqlite-bookings`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(apiBookingPayload),
