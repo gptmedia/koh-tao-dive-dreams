@@ -402,13 +402,6 @@ const Courses = () => {
                   <Link to={course.path} className="flex-1">
                     <Button variant="outline" className="w-full">{t('courses.viewCourse', 'View course')}</Button>
                   </Link>
-                  <a
-                    href={`/booking.html?item=${encodeURIComponent(course.title)}&type=${course.bookingType || 'course'}&price=${parsePriceMajor(course.price)}&currency=${course.depositCurrency}`}
-                    className="flex-1 bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 font-semibold text-center"
-                    style={{ display: 'block' }}
-                  >
-                    {t('courses.bookButton')}
-                  </a>
                 </div>
               </div>
             </div>
