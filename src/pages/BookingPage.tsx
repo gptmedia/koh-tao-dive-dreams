@@ -4,17 +4,7 @@ import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Calendar, User, Mail, Phone, MessageSquare } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -189,28 +179,22 @@ const BookingPage: React.FC = () => {
   const onSubmit = async (data: BookingFormData) => {
     setIsSubmitting(true);
     try {
-      // Compose booking/enquiry payload
       const payload = {
-        name: data.name,
+        access_key: import.meta.env.WEB3FORMS_ACCESS_KEY || import.meta.env.VITE_WEB3FORMS_ACCESS_KEY || '',
+        subject: 'New Booking/Enquiry',
+        from_name: data.name,
         email: data.email,
-        course: selectedCourse,
-        accommodation: accommodationType,
-        experience_level: data.experience_level,
-        message: data.message,
-        paymentChoice: data.paymentChoice,
-        price: coursePrice,
-        deposit,
+        message:
+          `Course: ${selectedCourse}\nAccommodation: ${accommodationType}\nExperience: ${data.experience_level}\nPayment: ${data.paymentChoice}\nPrice: ฿${coursePrice}\nDeposit: ฿${deposit}\nMessage: ${data.message}`,
       };
-
-      // Send to backend API (adjust endpoint as needed)
-      const res = await fetch('/api/send-booking', {
+      const res = await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
-      if (res.ok) {
+      const wfData = await res.json();
+      if (wfData.success) {
         if (data.paymentChoice === 'now') {
-          // Redirect to PayPal or show PayPal link
           window.open(`https://paypal.me/prodivingasia/${deposit}THB`, '_blank');
           toast.success('Booking sent! Please complete your deposit via PayPal.');
         } else {
