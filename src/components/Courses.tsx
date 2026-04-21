@@ -316,7 +316,7 @@ const Courses = () => {
             <div
               key={index}
               id={`course-${course.key}`}
-              className="bg-gray-100 border border-gray-300 rounded-xl shadow-md p-8 hover:shadow-lg transition-shadow duration-300 scroll-mt-20"
+              className="bg-gray-50 border border-gray-200 rounded-xl shadow-md p-8 hover:shadow-lg transition-shadow duration-300 scroll-mt-20"
             >
               <div className="flex items-start justify-between mb-6">
                 <div>
@@ -435,12 +435,13 @@ const Courses = () => {
                 <span className="text-3xl font-bold">฿18,000</span>
                 <span className="text-emerald-200 line-through text-lg">฿24,000</span>
               </div>
-              <Button 
-                className="w-full mt-4 bg-background text-emerald-600 hover:bg-emerald-50"
-                onClick={() => navigate('/booking?item=3%20Specialty%20Bundle&type=course&price=18000&currency=THB')}
+              <a
+                href="/booking.html?item=3%20Specialty%20Bundle&type=course&price=18000&currency=THB"
+                className="w-full mt-4 bg-background text-emerald-600 hover:bg-emerald-50 block text-center py-3 rounded-lg font-semibold"
+                style={{ textDecoration: 'none' }}
               >
                 {isDutch ? 'Boek Bundel' : 'Book Bundle'}
-              </Button>
+              </a>
             </div>
           </div>
         </div>
