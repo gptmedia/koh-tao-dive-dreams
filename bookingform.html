@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="nl">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Diving In Asia Booking Form / Inquiry</title>
+  <title>Diving In Asia Boekingsformulier / Aanvraag</title>
   <link rel="icon" href="/images/logo.png" />
   <style>
     body {
@@ -107,35 +107,35 @@
 <body>
   <div class="booking-container">
     <img src="/images/logo.png" alt="Diving In Asia Logo" class="logo" />
-    <h1>Diving In Asia Booking Form</h1>
-    <div class="subtitle">Booking / Inquiry Form</div>
-    <a href="/" style="display:inline-block;margin-bottom:1.5em;color:#0070ba;background:#e3f2fd;padding:0.7em 1.5em;border-radius:6px;text-decoration:none;font-weight:500;box-shadow:0 1px 4px #0070ba11;transition:background 0.2s, color 0.2s;">Go to Homepage</a>
+    <h1>Diving In Asia Boekingsformulier</h1>
+    <div class="subtitle">Boekings- / Aanvraagformulier</div>
+    <a href="/" style="display:inline-block;margin-bottom:1.5em;color:#0070ba;background:#e3f2fd;padding:0.7em 1.5em;border-radius:6px;text-decoration:none;font-weight:500;box-shadow:0 1px 4px #0070ba11;transition:background 0.2s, color 0.2s;">Ga naar de homepage</a>
     <form id="bookingForm">
-        <!-- Hidden field to include PayPal link in the email -->
+        <!-- Verborgen veld voor PayPal-link in de e-mail -->
         <input type="hidden" name="PayPal Deposit Link" value="https://paypal.me/prodivingasia" />
-      <input type="text" name="name" placeholder="Name" required />
-      <input type="email" name="email" placeholder="Email" required />
-      <input type="tel" name="phone" placeholder="Phone" required />
-      <input type="text" name="course" placeholder="Course / Package" required />
-      <input type="date" name="date" placeholder="Preferred Date" required />
+      <input type="text" name="name" placeholder="Naam" required />
+      <input type="email" name="email" placeholder="E-mail" required />
+      <input type="tel" name="phone" placeholder="Telefoon" required />
+      <input type="text" name="course" placeholder="Cursus / Pakket" required />
+      <input type="date" name="date" placeholder="Voorkeursdatum" required />
       <div class="checkbox-row">
         <input type="checkbox" id="experience" name="experience" />
-        <label for="experience">Experience Level</label>
+        <label for="experience">Ervaringsniveau</label>
       </div>
       <select name="level" required>
-        <option value="">Select Experience Level...</option>
+        <option value="">Selecteer ervaringsniveau...</option>
         <option value="Beginner">Beginner</option>
-        <option value="Intermediate">Intermediate</option>
-        <option value="Advanced">Advanced</option>
+        <option value="Intermediate">Gevorderd</option>
+        <option value="Advanced">Expert</option>
       </select>
-      <textarea name="comments" rows="3" placeholder="Comments / Questions"></textarea>
-      <button type="submit">Send Booking</button>
+      <textarea name="comments" rows="3" placeholder="Opmerkingen / Vragen"></textarea>
+      <button type="submit">Verstuur boeking</button>
     </form>
     <div class="success-message" id="successMsg">
-      Thank you! Your enquiry has been sent.<br>
-      <a id="paypalLink" href="https://paypal.me/prodivingasia" target="_blank" style="display:inline-block;margin:1em 0 0.5em 0;padding:0.75em 2em;background:#0070ba;color:#fff;border-radius:4px;font-size:1.1em;text-decoration:none;font-weight:bold;">Pay Deposit via PayPal</a><br>
+      Dank je wel! Je aanvraag is verzonden.<br>
+      <a id="paypalLink" href="https://paypal.me/prodivingasia" target="_blank" style="display:inline-block;margin:1em 0 0.5em 0;padding:0.75em 2em;background:#0070ba;color:#fff;border-radius:4px;font-size:1.1em;text-decoration:none;font-weight:bold;">Betaal aanbetaling via PayPal</a><br>
     </div>
-    <div class="error-message" id="errorMsg">Sorry, there was a problem sending your enquiry. Please try again.</div>
+    <div class="error-message" id="errorMsg">Sorry, er is een probleem opgetreden bij het verzenden van je aanvraag. Probeer het opnieuw.</div>
   </div>
   <script>
     // Web3Forms integration
