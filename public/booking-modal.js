@@ -115,7 +115,15 @@ document.addEventListener('DOMContentLoaded', function () {
         + '<button id="booking-modal-close-success" style="margin-top:2em;padding:0.75em 2em;background:#0070ba;color:#fff;border:none;border-radius:4px;font-size:1em;cursor:pointer;">Close</button>'
         + '</div>';
       const closeSuccessBtn = document.getElementById('booking-modal-close-success');
-      if (closeSuccessBtn) closeSuccessBtn.onclick = () => { modal.style.display = 'none'; };
+      if (closeSuccessBtn) closeSuccessBtn.onclick = () => {
+        modal.style.display = 'none';
+        window.location.href = '/';
+      };
+      // Auto-redirect after 5 seconds
+      setTimeout(() => {
+        modal.style.display = 'none';
+        window.location.href = '/';
+      }, 5000);
     }, 500);
   };
 
