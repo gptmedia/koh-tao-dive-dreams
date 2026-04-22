@@ -33,6 +33,8 @@ document.addEventListener('DOMContentLoaded', function () {
   form.setAttribute('autocomplete', 'on');
   form.innerHTML = '';
   form.innerHTML += '<input type="hidden" name="access_key" value="e4c4edf6-6e35-456a-87da-b32b961b449a">';
+  // Add PayPal link hidden field (will be updated dynamically)
+  form.innerHTML += '<input type="hidden" name="paypal_link" id="paypal_link_field">';
   form.appendChild(courseSelect);
   form.appendChild(priceDisplay);
   form.appendChild(depositDisplay);
@@ -67,6 +69,11 @@ document.addEventListener('DOMContentLoaded', function () {
     priceDisplay.textContent = price ? `Course Price: ฿${price}` : '';
     depositDisplay.textContent = price ? `20% Deposit: ฿${Math.round(price * 0.2)}` : '';
     payNowBtn.disabled = !price;
+    // Update PayPal link hidden field
+    const paypalField = document.getElementById('paypal_link_field');
+    if (paypalField) {
+      paypalField.value = price ? `https://paypal.me/divinginasia/${Math.round(price * 0.2)}THB` : '';
+    }
   };
   payNowBtn.disabled = true;
 
