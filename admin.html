@@ -45,8 +45,9 @@
     </table>
   </div>
   <script>
+    const API_BASE = window.location.port === '3003' ? 'http://localhost:3003' : '';
     async function fetchBookings() {
-      const res = await fetch('/api/bookings');
+      const res = await fetch(`${API_BASE}/api/bookings`);
       const data = await res.json();
       return data.bookings || [];
     }
@@ -113,7 +114,7 @@
           if (e.target.classList.contains('delete-btn')) {
             const id = e.target.getAttribute('data-id');
             if (confirm('Delete booking #' + id + '?')) {
-              await fetch('/api/bookings', {
+              await fetch(`${API_BASE}/api/bookings`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ id, status: 'cancelled' })
@@ -125,7 +126,7 @@
             const id = e.target.getAttribute('data-id');
             const newComments = prompt('Edit comments:');
             if (newComments !== null) {
-              await fetch('/api/bookings', {
+              await fetch(`${API_BASE}/api/bookings`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ id, comments: newComments })
@@ -138,7 +139,7 @@
           if (e.target.classList.contains('status-select')) {
             const id = e.target.getAttribute('data-id');
             const status = e.target.value;
-            await fetch('/api/bookings', {
+            await fetch(`${API_BASE}/api/bookings`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ id, status })
