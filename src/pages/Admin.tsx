@@ -19,7 +19,67 @@ const Admin = () => {
       { key: 'affiliate-clicks', label: 'Affiliate Clicks' },
       { key: 'pages', label: 'Pages Manager' },
       { key: 'project-manager', label: 'Project Manager' },
-    ];
+    { key: 'footer', label: 'Footer' },
+  ];
+    // Footer editor state
+    const FOOTER_SLUG = 'footer';
+    const [footerDraft, setFooterDraft] = useState<Record<string, string>>({
+      footer_line_1: '',
+      footer_line_2: '',
+    });
+    const [footerLoading, setFooterLoading] = useState(false);
+    const [footerSaving, setFooterSaving] = useState(false);
+    const [footerLocale, setFooterLocale] = useState('en');
+
+    const loadFooterSettings = async () => {
+      setFooterLoading(true);
+      try {
+        const { data, error } = await supabase
+          .from('page_content')
+          .select('section_key,content_value')
+          .eq('page_slug', FOOTER_SLUG)
+          .eq('locale', footerLocale);
+        if (error) throw error;
+        const next = { ...footerDraft };
+        if (Array.isArray(data)) {
+          data.forEach((row: any) => {
+            if (row?.section_key) {
+              next[row.section_key] = row.content_value || '';
+            }
+          });
+        }
+        setFooterDraft(next);
+      } catch (err) {
+        console.error('Failed to load footer settings:', err);
+      } finally {
+        setFooterLoading(false);
+      }
+    };
+
+    const saveFooterSettings = async () => {
+      setFooterSaving(true);
+      try {
+        const rows = [
+          { page_slug: FOOTER_SLUG, locale: footerLocale, section_key: 'footer_line_1', content_type: 'textarea', content_value: footerDraft.footer_line_1 || '' },
+          { page_slug: FOOTER_SLUG, locale: footerLocale, section_key: 'footer_line_2', content_type: 'textarea', content_value: footerDraft.footer_line_2 || '' },
+        ];
+        const { error } = await supabase
+          .from('page_content')
+          .upsert(rows, { onConflict: 'page_slug,section_key,locale' });
+        if (error) throw error;
+      } catch (err) {
+        alert('Error saving footer settings: ' + (err instanceof Error ? err.message : String(err)));
+      } finally {
+        setFooterSaving(false);
+      }
+    };
+
+    useEffect(() => {
+      if (activeTab === 'footer') {
+        loadFooterSettings();
+      }
+      // eslint-disable-next-line
+    }, [activeTab, footerLocale]);
   const jiraEmbedUrl = import.meta.env.VITE_JIRA_EMBED_URL || '';
   const jiraProjectUrl = import.meta.env.VITE_JIRA_PROJECT_URL || jiraEmbedUrl || 'https://divinginasia.atlassian.net';
   const [activeTab, setActiveTab] = useState('bookings');
@@ -193,6 +253,56 @@ const Admin = () => {
       </div>
       {/* Main Content */}
       <div className="full-width">
+        {activeTab === 'footer' && (
+          <div className="max-w-xl mx-auto bg-white rounded-lg shadow p-6 mt-8">
+            <h2 className="text-xl font-bold mb-4">Footer Content Editor</h2>
+            <div className="mb-4">
+              <label className="block mb-1 font-medium">Locale</label>
+              <select
+                value={footerLocale}
+                onChange={e => setFooterLocale(e.target.value)}
+                className="border rounded px-3 py-2"
+              >
+                <option value="en">English</option>
+                <option value="nl">Dutch</option>
+              </select>
+            </div>
+            {footerLoading ? (
+              <div className="text-gray-500">Loading footer content...</div>
+            ) : (
+              <>
+                <div className="mb-4">
+                  <label className="block mb-1 font-medium">Footer Line 1</label>
+                  <textarea
+                    value={footerDraft.footer_line_1}
+                    onChange={e => setFooterDraft(prev => ({ ...prev, footer_line_1: e.target.value }))}
+                    rows={2}
+                    className="w-full border rounded px-3 py-2"
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block mb-1 font-medium">Footer Line 2</label>
+                  <textarea
+                    value={footerDraft.footer_line_2}
+                    onChange={e => setFooterDraft(prev => ({ ...prev, footer_line_2: e.target.value }))}
+                    rows={2}
+                    className="w-full border rounded px-3 py-2"
+                  />
+                </div>
+                <div className="flex gap-2 justify-end">
+                  <button
+                    type="button"
+                    onClick={saveFooterSettings}
+                    disabled={footerSaving}
+                    className="rounded bg-blue-600 px-4 py-2 text-white font-semibold hover:bg-blue-700 disabled:opacity-50"
+                  >
+                    {footerSaving ? 'Saving...' : 'Save Footer Content'}
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+        )}
         <Dialog open={financeModalOpen} onOpenChange={setFinanceModalOpen}>
           <DialogContent className="sm:max-w-2xl">
             <DialogHeader>
