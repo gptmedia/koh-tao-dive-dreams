@@ -57,68 +57,38 @@ const buildTripFooterUrl = () => {
 };
 
 const Footer: React.FC = () => {
-  // Force Dutch always
-  const isDutch = true;
-  const tripUrl = buildTripFooterUrl();
+  const { i18n } = useTranslation();
+  const [footerContent, setFooterContent] = React.useState<{ [key: string]: string }>({});
+  const locale = i18n.language.startsWith('nl') ? 'nl' : 'en';
 
-  // handleTripClick just calls trackAffiliateClick
-    const handleTripClick = () => {
-      trackAffiliateClick({
-        provider: 'trip',
-        destinationUrl: tripUrl,
-        placement: 'footer-link',
-      });
+  React.useEffect(() => {
+    // Fetch all footer content for the current locale
+    const fetchFooterContent = async () => {
+      const { data, error } = await supabase
+        .from('page_content')
+        .select('section_key, content_value')
+        .eq('page_slug', 'contact')
+        .eq('locale', locale)
+        .in('section_key', ['footer_line_1', 'footer_line_2']);
+      if (!error && data) {
+        const content: { [key: string]: string } = {};
+        data.forEach((row: any) => {
+          content[row.section_key] = row.content_value;
+        });
+        setFooterContent(content);
+      }
     };
+    fetchFooterContent();
+  }, [locale]);
 
   return (
     <footer className="bg-[#0a2239] text-white mt-12">
       <div className="max-w-7xl mx-auto px-4 py-12">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
-          {/* Diving */}
-          <div>
-            <h4 className="text-blue-400 text-xs font-bold uppercase tracking-wider mb-4">Duiken</h4>
-            <ul className="space-y-2 text-sm text-gray-400">
-              <li><Link to="/courses/open-water" className="hover:text-white transition">Open Water</Link></li>
-              <li><Link to="/courses/discover-scuba" className="hover:text-white transition">Discover Scuba (DSD)</Link></li>
-              <li><Link to="/courses/discover-scuba-deluxe" className="hover:text-white transition">Discover Scuba Deluxe</Link></li>
-              <li><Link to="/courses/advanced" className="hover:text-white transition">Advanced</Link></li>
-              <li><Link to="/courses/rescue" className="hover:text-white transition">Rescue Diver</Link></li>
-              <li><Link to="/fun-diving-koh-tao" className="hover:text-white transition">Fun Diven</Link></li>
-              <li><Link to="/koh-tao-dive-sites" className="hover:text-white transition">Duiklocaties</Link></li>
-              <li><Link to="/marine-life" className="hover:text-white transition">Mariene leven</Link></li>
-            </ul>
-          </div>
-          {/* Koh Tao */}
-          <div>
-            <h4 className="text-blue-400 text-xs font-bold uppercase tracking-wider mb-4">Koh Tao</h4>
-            <ul className="space-y-2 text-sm text-gray-400">
-              <li><Link to="/koh-tao-info" className="hover:text-white transition">Over Koh Tao</Link></li>
-              <li><Link to="/Accommodation" className="hover:text-white transition">Accommodatie</Link></li>
-              <li><Link to="/BeachesKohTao" className="hover:text-white transition">Stranden</Link></li>
-              <li><Link to="/FoodDrink" className="hover:text-white transition">Eten & Drinken</Link></li>
-              <li><Link to="/ThingsToDo" className="hover:text-white transition">Activiteiten</Link></li>
-              <li><Link to="/HowToGetHere" className="hover:text-white transition">Hoe kom je hier</Link></li>
-            </ul>
-          </div>
-          {/* Info */}
-          <div>
-            <h4 className="text-blue-400 text-xs font-bold uppercase tracking-wider mb-4">{isDutch ? 'Informatie' : 'Information'}</h4>
-            <ul className="space-y-2 text-sm text-gray-400">
-              <li><Link to="/WeatherKohTao" className="hover:text-white transition">{isDutch ? 'Weer' : 'Weather'}</Link></li>
-              <li><Link to="/VisasKohTao" className="hover:text-white transition">Visas</Link></li>
-              <li><Link to="/MedicalServices" className="hover:text-white transition">{isDutch ? 'Medisch' : 'Medical'}</Link></li>
-              <li><a href="https://www.divinginasia.com/agoda-hotels" target="_blank" rel="noopener noreferrer" className="hover:text-white transition">Agoda</a></li>
-              {/* Trip.com link removed as requested, Agoda link added */}
-              <li><a href="https://www.divinginasia.com/#contact" className="hover:text-white transition">Contact</a></li>
-            </ul>
-          </div>
-        </div>
-        {/* Bottom bar */}
+        {/* ...existing code for links and sections... */}
         <div className="border-t border-[#1a3a5c] pt-6 text-center text-xs text-gray-500">
-          © {new Date().getFullYear()} Pro Diving Asia — All rights reserved | Powered By{' '}
-          <a href="https://www.onemedia.asia" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 transition font-medium">
-            One Media Asia Co, Ltd
-          </a>
+          {footerContent.footer_line_1 || `© ${new Date().getFullYear()} Pro Diving Asia — All rights reserved | Powered By One Media Asia Co, Ltd`}
+          <br />
+          {footerContent.footer_line_2 && <span>{footerContent.footer_line_2}</span>}
         </div>
       </div>
     </footer>
