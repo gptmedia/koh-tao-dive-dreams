@@ -107,8 +107,16 @@ document.addEventListener('DOMContentLoaded', function () {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(bookingData),
     });
-    // Let Web3Forms handle the actual form submit
-    setTimeout(() => { modal.style.display = 'none'; }, 1000);
+    // Show success message in modal instead of closing
+    setTimeout(() => {
+      form.innerHTML = '<div style="text-align:center;padding:2em 0;">'
+        + '<h2 style="color:#22c55e;font-size:2em;margin-bottom:0.5em;">Success!</h2>'
+        + '<p>Thank you! Your booking/inquiry has been received.<br>We will contact you soon.</p>'
+        + '<button id="booking-modal-close-success" style="margin-top:2em;padding:0.75em 2em;background:#0070ba;color:#fff;border:none;border-radius:4px;font-size:1em;cursor:pointer;">Close</button>'
+        + '</div>';
+      const closeSuccessBtn = document.getElementById('booking-modal-close-success');
+      if (closeSuccessBtn) closeSuccessBtn.onclick = () => { modal.style.display = 'none'; };
+    }, 500);
   };
 
 });

@@ -51,14 +51,16 @@
 </body>
 <script src="/public/booking-modal.js"></script>
 <script>
-// Redirect to thank you page after form submit
+// No redirect after form submit
 document.addEventListener('DOMContentLoaded', function() {
   const form = document.getElementById('booking-form');
   if (!form) return;
   form.addEventListener('submit', function(e) {
     e.preventDefault();
     // Optionally, collect form data here if you want to send it somewhere
-    window.location.href = '/thank-you.html';
+    // No redirect, modal stays open
+    // You can show a success message here if desired
+    alert('Thank you! Your booking/inquiry has been received.');
   });
 });
 </script>
