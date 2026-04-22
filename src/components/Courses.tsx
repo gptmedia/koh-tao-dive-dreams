@@ -316,7 +316,7 @@ const Courses = () => {
             <div
               key={index}
               id={`course-${course.key}`}
-              className="bg-blue-50 border border-gray-200 rounded-xl shadow-md p-8 hover:shadow-lg transition-shadow duration-300 scroll-mt-20"
+              className="bg-gray-100 border border-gray-200 rounded-xl shadow-md p-8 hover:shadow-lg transition-shadow duration-300 scroll-mt-20"
             >
               <div className="flex items-start justify-between mb-6">
                 <div>
