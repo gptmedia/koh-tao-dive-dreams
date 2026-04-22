@@ -1,17 +1,73 @@
-import { createClient } from '@supabase/supabase-js';
+const dbPath = process.env.SQLITE_PATH || './bookings.db';
+const sqlite3 = require('sqlite3').verbose();
+const db = new sqlite3.Database(dbPath);
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-);
-
-export default async function handler(req, res) {
+module.exports = (req, res) => {
   if (req.method === 'GET') {
-    const { data, error } = await supabase.from('bookings').select('*');
-    if (error) return res.status(500).json({ error: error.message });
-    return res.status(200).json({ bookings: data });
+    db.all('SELECT * FROM bookings', [], (err, rows) => {
+      if (err) {
+        return res.status(500).json({ error: err.message });
+      }
+      res.status(200).json({ bookings: rows });
+    });
+  } else if (req.method === 'POST') {
+    const { id, status, comments, ...rest } = req.body || {};
+    if (!id) {
+      // CREATE new booking
+      // Accepts all fields in rest
+      const fields = Object.keys(rest);
+      const values = Object.values(rest);
+      if (fields.length === 0) {
+        return res.status(400).json({ error: 'No booking data provided' });
+      }
+      const placeholders = fields.map(() => '?').join(', ');
+      const sql = `INSERT INTO bookings (${fields.join(', ')}) VALUES (${placeholders})`;
+      db.run(sql, values, function (err) {
+        if (err) {
+          return res.status(500).json({ error: err.message });
+        }
+        db.get('SELECT * FROM bookings WHERE id = ?', [this.lastID], (err2, row) => {
+          if (err2) {
+            return res.status(500).json({ error: err2.message });
+          }
+          res.status(201).json(row);
+        });
+      });
+      return;
+    }
+    // UPDATE booking by id (existing logic)
+    const updateFields = [];
+    const updateValues = [];
+    if (status !== undefined) {
+      updateFields.push('status = ?');
+      updateValues.push(status);
+    }
+    if (comments !== undefined) {
+      updateFields.push('comments = ?');
+      updateValues.push(comments);
+    }
+    for (const key in rest) {
+      updateFields.push(`${key} = ?`);
+      updateValues.push(rest[key]);
+    }
+    if (updateFields.length === 0) {
+      return res.status(400).json({ error: 'No fields to update' });
+    }
+    updateValues.push(id);
+    const updateSql = `UPDATE bookings SET ${updateFields.join(', ')} WHERE id = ?`;
+    db.run(updateSql, updateValues, function (err) {
+      if (err) {
+        return res.status(500).json({ error: err.message });
+      }
+      db.get('SELECT * FROM bookings WHERE id = ?', [id], (err2, row) => {
+        if (err2) {
+          return res.status(500).json({ error: err2.message });
+        }
+        res.status(200).json(row);
+      });
+    });
   } else {
-    res.setHeader('Allow', ['GET']);
-    return res.status(405).end(`Method ${req.method} Not Allowed`);
+    res.setHeader('Allow', ['GET', 'POST']);
+    res.status(405).end(`Method ${req.method} Not Allowed`);
   }
-}
+};

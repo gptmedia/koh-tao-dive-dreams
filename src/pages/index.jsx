@@ -30,7 +30,7 @@ const Index = () => {
 			<Hero />
 			<About />
 			<CurrencyExchange />
-			<DiveSites />
+		<DiveSites />
 			<Courses />
 			<FunDiving />
 			<Gallery />

@@ -201,7 +201,7 @@ const BookNowForm: React.FC = () => {
                   {loading ? 'Processing...' : 'Pay Now (PayPal)'}
                 </button>
                 <button onClick={handleNotNow} disabled={loading} style={{ background: '#aaa', color: '#fff', border: 'none', borderRadius: 4, padding: '0.75rem 1.5rem', fontSize: '1rem', cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.7 : 1 }}>
-                  {loading ? 'Processing...' : 'Not Now'}
+                  {loading ? 'Processing...' : 'Send Enquiry'}
                 </button>
               </div>
             </div>
