@@ -436,7 +436,7 @@ const Courses = () => {
                 <span className="text-emerald-200 line-through text-lg">฿24,000</span>
               </div>
               <a
-                href="/booking.html?item=3%20Specialty%20Bundle&type=course&price=18000&currency=THB"
+                href="/bookingform.html?item=3%20Specialty%20Bundle&type=course&price=18000&currency=THB"
                 className="w-full mt-4 bg-background text-emerald-600 hover:bg-emerald-50 block text-center py-3 rounded-lg font-semibold"
                 style={{ textDecoration: 'none' }}
               >
