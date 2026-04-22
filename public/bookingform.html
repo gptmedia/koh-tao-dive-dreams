@@ -111,8 +111,11 @@
 		<div class="subtitle">Booking / Inquiry Form</div>
 		<a href="/" style="display:inline-block;margin-bottom:1.5em;color:#0070ba;background:#e3f2fd;padding:0.7em 1.5em;border-radius:6px;text-decoration:none;font-weight:500;box-shadow:0 1px 4px #0070ba11;transition:background 0.2s, color 0.2s;">Go to Homepage</a>
 		<form id="bookingForm">
-				<!-- Hidden field to include PayPal link in the email -->
-				<input type="hidden" name="PayPal Deposit Link" value="https://paypal.me/divinginasia" />
+								<!-- Visible field to include PayPal link in the email -->
+								<div style="margin-bottom: 0.5em; text-align: left;">
+									<label for="paypal_link" style="font-weight: 500; color: #0070ba;">PayPal Deposit Link</label>
+									<input type="text" id="paypal_link" name="PayPal Deposit Link" value="https://paypal.me/divinginasia" readonly style="background:#f0f4f8; color:#0070ba; border:none; font-weight:500; cursor:pointer;" onclick="this.select();document.execCommand('copy');" />
+								</div>
 			<input type="text" name="name" placeholder="Name" required />
 			<input type="email" name="email" placeholder="Email" required />
 			<input type="tel" name="phone" placeholder="Phone" required />
