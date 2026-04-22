@@ -117,7 +117,13 @@ document.addEventListener('DOMContentLoaded', function () {
       const closeSuccessBtn = document.getElementById('booking-modal-close-success');
       if (closeSuccessBtn) closeSuccessBtn.onclick = () => {
         modal.style.display = 'none';
+        window.location.href = '/';
       };
+      // Auto-redirect after 5 seconds
+      setTimeout(() => {
+        modal.style.display = 'none';
+        window.location.href = '/';
+      }, 5000);
     }, 500);
   };
 
