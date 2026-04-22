@@ -42,7 +42,12 @@ const FunDiving = () => {
     fun_diving_marine_tab_title: 'Ontdek de onderwaterwereld',
     // ...add more as needed for other tabs
   }), []);
-  const { content } = usePageContent({ pageSlug: 'fun-diving', locale, fallbackContent });
+  // Force Dutch subtitle regardless of content source
+  const { content: originalContent } = usePageContent({ pageSlug: 'fun-diving', locale, fallbackContent });
+  const content = {
+    ...originalContent,
+    fun_diving_hero_subtitle: 'Beleef het beste van de onderwaterwereld van Koh Tao met onze professioneel begeleide fun duiktrips. Ontdek kleurrijke koraalriffen, ontmoet bijzonder onderwaterleven en maak onvergetelijke herinneringen.'
+  };
   const diveSites = [
     {
       name: "Sail Rock",
