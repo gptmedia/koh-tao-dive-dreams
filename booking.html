@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Pro Diving Booking / Inquiry</title>
+  <title>Diving In Asia Booking / Inquiry</title>
   <link rel="icon" href="/images/logo.png" />
   <style>
     body {
@@ -106,9 +106,10 @@
 </head>
 <body>
   <div class="booking-container">
-    <img src="/images/logo.png" alt="Pro Diving Logo" class="logo" />
-    <h1>Pro Diving</h1>
+    <img src="/images/logo.png" alt="Diving In Asia Logo" class="logo" />
+    <h1>Diving In Asia</h1>
     <div class="subtitle">Booking / Inquiry Form</div>
+    <a href="/" style="display:inline-block;margin-bottom:1.5em;color:#0070ba;background:#e3f2fd;padding:0.7em 1.5em;border-radius:6px;text-decoration:none;font-weight:500;box-shadow:0 1px 4px #0070ba11;transition:background 0.2s, color 0.2s;">Go to Homepage</a>
     <form id="bookingForm">
       <input type="text" name="name" placeholder="Name" required />
       <input type="email" name="email" placeholder="Email" required />
@@ -130,7 +131,9 @@
     </form>
     <div class="success-message" id="successMsg">
       Thank you! Your enquiry has been sent.<br>
-      <a id="paypalLink" href="https://paypal.me/divinginasia" target="_blank" style="display:inline-block;margin:1em 0;padding:0.75em 2em;background:#0070ba;color:#fff;border-radius:4px;font-size:1.1em;text-decoration:none;font-weight:bold;">Pay Deposit via PayPal</a><br>
+      <a id="paypalLink" href="https://paypal.me/divinginasia" target="_blank" style="display:inline-block;margin:1em 0 0.5em 0;padding:0.75em 2em;background:#0070ba;color:#fff;border-radius:4px;font-size:1.1em;text-decoration:none;font-weight:bold;">Pay Deposit via PayPal</a><br>
+      <button id="goHomeBtn" style="margin:0.5em 0 0 0;padding:0.7em 2em;background:#e0f2f1;color:#0070ba;border:none;border-radius:6px;font-size:1em;cursor:pointer;">Return Home</button>
+      <div style="margin-top:1em;color:#888;font-size:0.95em;">You will be redirected to the Thank You page in 10 seconds.</div>
     </div>
     <div class="error-message" id="errorMsg">Sorry, there was a problem sending your enquiry. Please try again.</div>
   </div>
@@ -144,7 +147,6 @@
       successMsg.style.display = 'none';
       errorMsg.style.display = 'none';
       const formData = new FormData(form);
-      // Add your Web3Forms access key here
       formData.append('access_key', 'e4c4edf6-6e35-456a-87da-b32b961b449a');
       try {
         const response = await fetch('https://api.web3forms.com/submit', {
@@ -152,19 +154,22 @@
           body: formData
         });
         const result = await response.json();
-          if(result.success) {
-            // Redirect to thank you page after successful submission
-            window.location.href = 'thankyou.html';
-            // If you want to delay the redirect to show the message briefly, uncomment below:
-            // successMsg.style.display = 'block';
-            // form.reset();
-            // setTimeout(() => { window.location.href = 'thankyou.html'; }, 1500);
-            // Optionally, set PayPal link dynamically here if you have price info
-          } else {
-            errorMsg.style.display = 'block';
+        if(result.success) {
+          successMsg.style.display = 'block';
+          form.reset();
+          // Add event for Go Home button
+          setTimeout(() => { window.location.href = 'thankyou.html'; }, 10000);
+        } else {
+          errorMsg.style.display = 'block';
         }
       } catch (err) {
         errorMsg.style.display = 'block';
+      }
+    });
+    // Go Home button event
+    document.addEventListener('click', function(e) {
+      if(e.target && e.target.id === 'goHomeBtn') {
+        window.location.href = '/';
       }
     });
   </script>
