@@ -106,38 +106,114 @@
 </head>
 <body>
   <div class="booking-container">
+    <div style="text-align:right; margin-bottom: 0.5em;">
+      <button type="button" id="lang-nl" style="margin-right:0.5em;">NL</button>
+      <button type="button" id="lang-en">EN</button>
+    </div>
     <img src="/images/logo.png" alt="Diving In Asia Logo" class="logo" />
-    <h1>Diving In Asia Boekingsformulier</h1>
-    <div class="subtitle">Boekings- / Aanvraagformulier</div>
-    <a href="/" style="display:inline-block;margin-bottom:1.5em;color:#0070ba;background:#e3f2fd;padding:0.7em 1.5em;border-radius:6px;text-decoration:none;font-weight:500;box-shadow:0 1px 4px #0070ba11;transition:background 0.2s, color 0.2s;">Ga naar de homepage</a>
+    <h1 id="form-title">Diving In Asia Boekingsformulier</h1>
+    <div class="subtitle" id="form-subtitle">Boekings- / Aanvraagformulier</div>
+    <a id="home-link" href="/" style="display:inline-block;margin-bottom:1.5em;color:#0070ba;background:#e3f2fd;padding:0.7em 1.5em;border-radius:6px;text-decoration:none;font-weight:500;box-shadow:0 1px 4px #0070ba11;transition:background 0.2s, color 0.2s;">Ga naar de homepage</a>
     <form id="bookingForm">
         <!-- Verborgen veld voor PayPal-link in de e-mail -->
         <input type="hidden" name="PayPal Deposit Link" value="https://paypal.me/prodivingasia" />
-      <input type="text" name="name" placeholder="Naam" required />
-      <input type="email" name="email" placeholder="E-mail" required />
-      <input type="tel" name="phone" placeholder="Telefoon" required />
-      <input type="text" name="course" placeholder="Cursus / Pakket" required />
-      <input type="date" name="date" placeholder="Voorkeursdatum" required />
+      <input type="text" name="name" id="name-input" placeholder="Naam" required />
+      <input type="email" name="email" id="email-input" placeholder="E-mail" required />
+      <input type="tel" name="phone" id="phone-input" placeholder="Telefoon" required />
+      <input type="text" name="course" id="course-input" placeholder="Cursus / Pakket" required />
+      <input type="date" name="date" id="date-input" placeholder="Voorkeursdatum" required />
       <div class="checkbox-row">
         <input type="checkbox" id="experience" name="experience" />
-        <label for="experience">Ervaringsniveau</label>
+        <label for="experience" id="experience-label">Ervaringsniveau</label>
       </div>
-      <select name="level" required>
+      <select name="level" id="level-select" required>
         <option value="">Selecteer ervaringsniveau...</option>
         <option value="Beginner">Beginner</option>
         <option value="Intermediate">Gevorderd</option>
         <option value="Advanced">Expert</option>
       </select>
-      <textarea name="comments" rows="3" placeholder="Opmerkingen / Vragen"></textarea>
-      <button type="submit">Verstuur boeking</button>
+      <textarea name="comments" id="comments-input" rows="3" placeholder="Opmerkingen / Vragen"></textarea>
+      <button type="submit" id="submit-btn">Verstuur boeking</button>
     </form>
     <div class="success-message" id="successMsg">
-      Dank je wel! Je aanvraag is verzonden.<br>
+      <span id="success-text">Dank je wel! Je aanvraag is verzonden.</span><br>
       <a id="paypalLink" href="https://paypal.me/prodivingasia" target="_blank" style="display:inline-block;margin:1em 0 0.5em 0;padding:0.75em 2em;background:#0070ba;color:#fff;border-radius:4px;font-size:1.1em;text-decoration:none;font-weight:bold;">Betaal aanbetaling via PayPal</a><br>
     </div>
     <div class="error-message" id="errorMsg">Sorry, er is een probleem opgetreden bij het verzenden van je aanvraag. Probeer het opnieuw.</div>
   </div>
   <script>
+    // Bilingual translations
+    const translations = {
+      nl: {
+        title: 'Diving In Asia Boekingsformulier',
+        subtitle: 'Boekings- / Aanvraagformulier',
+        home: 'Ga naar de homepage',
+        name: 'Naam',
+        email: 'E-mail',
+        phone: 'Telefoon',
+        course: 'Cursus / Pakket',
+        date: 'Voorkeursdatum',
+        experience: 'Ervaringsniveau',
+        selectLevel: 'Selecteer ervaringsniveau...',
+        beginner: 'Beginner',
+        intermediate: 'Gevorderd',
+        advanced: 'Expert',
+        comments: 'Opmerkingen / Vragen',
+        submit: 'Verstuur boeking',
+        success: 'Dank je wel! Je aanvraag is verzonden.',
+        pay: 'Betaal aanbetaling via PayPal',
+        error: 'Sorry, er is een probleem opgetreden bij het verzenden van je aanvraag. Probeer het opnieuw.'
+      },
+      en: {
+        title: 'Diving In Asia Booking Form',
+        subtitle: 'Booking / Inquiry Form',
+        home: 'Go to Homepage',
+        name: 'Name',
+        email: 'Email',
+        phone: 'Phone',
+        course: 'Course / Package',
+        date: 'Preferred Date',
+        experience: 'Experience Level',
+        selectLevel: 'Select Experience Level...',
+        beginner: 'Beginner',
+        intermediate: 'Intermediate',
+        advanced: 'Advanced',
+        comments: 'Comments / Questions',
+        submit: 'Send Booking',
+        success: 'Thank you! Your enquiry has been sent.',
+        pay: 'Pay Deposit via PayPal',
+        error: 'Sorry, there was a problem sending your enquiry. Please try again.'
+      }
+    };
+
+    function setLang(lang) {
+      document.documentElement.lang = lang;
+      const t = translations[lang];
+      document.getElementById('form-title').textContent = t.title;
+      document.getElementById('form-subtitle').textContent = t.subtitle;
+      document.getElementById('home-link').textContent = t.home;
+      document.getElementById('name-input').placeholder = t.name;
+      document.getElementById('email-input').placeholder = t.email;
+      document.getElementById('phone-input').placeholder = t.phone;
+      document.getElementById('course-input').placeholder = t.course;
+      document.getElementById('date-input').placeholder = t.date;
+      document.getElementById('experience-label').textContent = t.experience;
+      const levelSelect = document.getElementById('level-select');
+      levelSelect.options[0].textContent = t.selectLevel;
+      levelSelect.options[1].textContent = t.beginner;
+      levelSelect.options[2].textContent = t.intermediate;
+      levelSelect.options[3].textContent = t.advanced;
+      document.getElementById('comments-input').placeholder = t.comments;
+      document.getElementById('submit-btn').textContent = t.submit;
+      document.getElementById('success-text').textContent = t.success;
+      document.getElementById('paypalLink').textContent = t.pay;
+      document.getElementById('errorMsg').textContent = t.error;
+    }
+
+    document.getElementById('lang-nl').onclick = () => setLang('nl');
+    document.getElementById('lang-en').onclick = () => setLang('en');
+    // Set default language
+    setLang('nl');
     // Web3Forms integration
     const form = document.getElementById('bookingForm');
     const successMsg = document.getElementById('successMsg');
@@ -149,7 +225,9 @@
       // Append PayPal link to message textarea
       const messageField = form.querySelector('textarea[name="comments"]');
       if (messageField) {
-        messageField.value += '\n\nPay your deposit via PayPal: https://paypal.me/prodivingasia';
+        const lang = document.documentElement.lang;
+        const payText = lang === 'nl' ? 'Betaal je aanbetaling via PayPal: https://paypal.me/prodivingasia' : 'Pay your deposit via PayPal: https://paypal.me/prodivingasia';
+        messageField.value += '\n\n' + payText;
       }
       const formData = new FormData(form);
       formData.append('access_key', 'e4c4edf6-6e35-456a-87da-b32b961b449a');
