@@ -131,7 +131,6 @@
     <div class="success-message" id="successMsg">
       Thank you! Your enquiry has been sent.<br>
       <a id="paypalLink" href="https://paypal.me/divinginasia" target="_blank" style="display:inline-block;margin:1em 0;padding:0.75em 2em;background:#0070ba;color:#fff;border-radius:4px;font-size:1.1em;text-decoration:none;font-weight:bold;">Pay Deposit via PayPal</a><br>
-      <button id="goHomeBtn" style="margin-top:1em;padding:0.75em 2em;background:#22c55e;color:#fff;border:none;border-radius:4px;font-size:1em;cursor:pointer;">Go Home</button>
     </div>
     <div class="error-message" id="errorMsg">Sorry, there was a problem sending your enquiry. Please try again.</div>
   </div>
@@ -153,13 +152,16 @@
           body: formData
         });
         const result = await response.json();
-        if(result.success) {
-          successMsg.style.display = 'block';
-          form.reset();
-          // Optionally, set PayPal link dynamically here if you have price info
-          document.getElementById('goHomeBtn').onclick = function() { window.location.href = '/'; };
-        } else {
-          errorMsg.style.display = 'block';
+          if(result.success) {
+            // Redirect to thank you page after successful submission
+            window.location.href = 'thankyou.html';
+            // If you want to delay the redirect to show the message briefly, uncomment below:
+            // successMsg.style.display = 'block';
+            // form.reset();
+            // setTimeout(() => { window.location.href = 'thankyou.html'; }, 1500);
+            // Optionally, set PayPal link dynamically here if you have price info
+          } else {
+            errorMsg.style.display = 'block';
         }
       } catch (err) {
         errorMsg.style.display = 'block';
