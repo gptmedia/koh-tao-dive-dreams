@@ -244,20 +244,22 @@
         comments: messageField ? messageField.value : ''
       };
 
-      // Send to Web3Forms (email)
       try {
+        // Send to Web3Forms (email)
         const response = await fetch('https://api.web3forms.com/submit', {
           method: 'POST',
           body: formData
         });
         const result = await response.json();
+
         // Send to SQLite API (local server)
-        fetch('/api/bookings', {
+        const apiRes = await fetch('/api/bookings', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(bookingData)
         });
-        if(result.success) {
+
+        if(result.success && apiRes.ok) {
           successMsg.style.display = 'block';
           form.reset();
         } else {

@@ -108,7 +108,7 @@
 
         document.getElementById('newBookingBtn').onclick = showNewBookingModal;
     // Use localhost for dev, Hostinger API for production
-    const API_BASE = window.location.hostname === 'localhost' ? 'http://localhost:3000' : 'https://koh-tao-dive-dreams.vercel.app';
+    const API_BASE = window.location.hostname === 'localhost' ? 'http://localhost:3000' : 'https://api.hostinger.com/v1';
     async function fetchBookings() {
       const res = await fetch(`${API_BASE}/api/bookings`);
       const data = await res.json();

@@ -18,13 +18,13 @@ module.exports = (req, res) => {
         name: rest.name,
         email: rest.email,
         phone: rest.phone,
-        course_title: rest.course,
-        preferred_date: rest.date,
-        experience_level: rest.level,
-        message: rest.comments,
+        course: rest.course,
+        date: rest.date,
+        level: rest.level,
+        experience: rest.experience,
+        comments: rest.comments !== undefined ? rest.comments : (comments !== undefined ? comments : ''),
         status: status || 'pending',
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
+        created_at: new Date().toISOString()
       };
       // Remove undefined fields
       Object.keys(booking).forEach(k => booking[k] === undefined && delete booking[k]);
