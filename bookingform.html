@@ -232,16 +232,15 @@
       const formData = new FormData(form);
       formData.append('access_key', 'e4c4edf6-6e35-456a-87da-b32b961b449a');
 
-      // Prepare booking data for SQLite API
+      // Map form fields to Supabase schema
       const bookingData = {
         name: form.elements['name'].value,
         email: form.elements['email'].value,
         phone: form.elements['phone'].value,
-        course: form.elements['course'].value,
-        date: form.elements['date'].value,
-        experience: form.elements['experience'].checked ? 'Yes' : 'No',
-        level: form.elements['level'].value,
-        comments: messageField ? messageField.value : ''
+        course_title: form.elements['course'].value, // mapped
+        preferred_date: form.elements['date'].value, // mapped
+        experience_level: (form.elements['experience'].checked ? 'Yes' : 'No') + ' - ' + form.elements['level'].value, // combine
+        message: messageField ? messageField.value : '' // mapped
       };
 
       try {
@@ -252,7 +251,7 @@
         });
         const result = await response.json();
 
-        // Send to SQLite API (local server)
+        // Send to bookings API (Supabase backend)
         const apiRes = await fetch('/api/bookings', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
