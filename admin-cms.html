@@ -29,7 +29,36 @@
       <textarea id="editor"></textarea>
       <button id="saveBtn">Save Changes</button>
       <div id="saveMsg"></div>
+      <hr style="margin:2em 0;" />
+      <button id="showBookingsBtn">Show Bookings</button>
+      <div id="bookingsSection" style="margin-top:2em;"></div>
     </div>
+      document.getElementById('showBookingsBtn').onclick = async function() {
+        const bookingsSection = document.getElementById('bookingsSection');
+        bookingsSection.innerHTML = 'Loading bookings...';
+        try {
+          const res = await fetch('/api/bookings');
+          const data = await res.json();
+          const bookings = data.bookings || data || [];
+          if (!Array.isArray(bookings) || bookings.length === 0) {
+            bookingsSection.innerHTML = '<div>No bookings found.</div>';
+            return;
+          }
+          let table = '<table border="1" cellpadding="8" style="border-collapse:collapse;width:100%">';
+          table += '<thead><tr>';
+          Object.keys(bookings[0]).forEach(key => { table += `<th>${key}</th>`; });
+          table += '</tr></thead><tbody>';
+          bookings.forEach(b => {
+            table += '<tr>';
+            Object.values(b).forEach(val => { table += `<td>${val}</td>`; });
+            table += '</tr>';
+          });
+          table += '</tbody></table>';
+          bookingsSection.innerHTML = table;
+        } catch (e) {
+          bookingsSection.innerHTML = '<div style="color:red">Failed to load bookings.</div>';
+        }
+      };
   </div>
   <script>
     tinymce.init({ selector: '#editor', height: 500 });
