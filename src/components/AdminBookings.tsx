@@ -143,28 +143,22 @@ const AdminBookings: React.FC = () => {
 
   const calendarFeedUrl = 'https://koh-tao-dive-dreams.vercel.app/api/bookings/calendar';
 
+  // Fetch bookings from Supabase directly
   useEffect(() => {
     async function fetchBookings() {
       setLoading(true);
       setError(null);
       try {
-        const { data: { session } } = await supabase.auth.getSession();
-        const token = session?.access_token;
-        if (!token) throw new Error('Not authenticated');
-        const res = await fetch('/api/bookings', {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        if (!res.ok) throw new Error('Failed to fetch bookings');
-        const data = await res.json();
-        setBookings(data);
+        const { data, error } = await supabase
+          .from('bookings')
+          .select('*')
+          .order('created_at', { ascending: false });
+        if (error) throw error;
+        setBookings(data || []);
         const initialDrafts: Record<string, string> = {};
-        if (Array.isArray(data)) {
-          data.forEach((booking: Booking) => {
-            initialDrafts[booking.id] = booking.status || 'pending';
-          });
-        } else {
-          console.error('Data is not an array:', data);
-        }
+        (data || []).forEach((booking: Booking) => {
+          initialDrafts[booking.id] = booking.status || 'pending';
+        });
         setStatusDrafts(initialDrafts);
       } catch (err: any) {
         setError(err.message || 'Failed to fetch bookings');
@@ -220,40 +214,26 @@ const AdminBookings: React.FC = () => {
     setBankTransferResult(null);
   }, [financeModalBook, bankTransferDetails]);
 
+  // Update booking note using Supabase
   const saveBookNote = async () => {
     if (!financeModalBook) return;
-
     setNoteSaving(true);
     setNoteResult(null);
     try {
-      const res = await fetch('/api/bookings', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: financeModalBook.id, internal_notes: noteDraft }),
-      });
-
-      if (!res.ok) {
-        const payload = await res.json().catch(() => ({}));
-        throw new Error(payload?.error || 'Failed to save booking note');
-      }
-
+      const { error } = await supabase
+        .from('bookings')
+        .update({ internal_notes: noteDraft })
+        .eq('id', financeModalBook.id);
+      if (error) throw error;
       setBookings((prev) =>
         prev.map((b) =>
           b.id === financeModalBook.id
-            ? {
-                ...b,
-                internal_notes: noteDraft,
-              }
+            ? { ...b, internal_notes: noteDraft }
             : b
         )
       );
       setFinanceModalBook((prev) =>
-        prev
-          ? {
-              ...prev,
-              internal_notes: noteDraft,
-            }
-          : prev
+        prev ? { ...prev, internal_notes: noteDraft } : prev
       );
       setNoteResult('Booking note saved.');
     } catch (err) {
@@ -263,41 +243,26 @@ const AdminBookings: React.FC = () => {
     }
   };
 
+  // Update bank transfer details using Supabase
   const saveBankTransferDetails = async () => {
     if (!financeModalBook) return;
-
     setBankTransferSaving(true);
     setBankTransferResult(null);
-
     try {
-      const res = await fetch('/api/bookings', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: financeModalBook.id, bank_transfer_details: bankTransferDraft }),
-      });
-
-      if (!res.ok) {
-        const payload = await res.json().catch(() => ({}));
-        throw new Error(payload?.error || 'Failed to save booking bank transfer details');
-      }
-
+      const { error } = await supabase
+        .from('bookings')
+        .update({ bank_transfer_details: bankTransferDraft })
+        .eq('id', financeModalBook.id);
+      if (error) throw error;
       setBookings((prev) =>
         prev.map((b) =>
           b.id === financeModalBook.id
-            ? {
-                ...b,
-                bank_transfer_details: bankTransferDraft,
-              }
+            ? { ...b, bank_transfer_details: bankTransferDraft }
             : b
         )
       );
       setFinanceModalBook((prev) =>
-        prev
-          ? {
-              ...prev,
-              bank_transfer_details: bankTransferDraft,
-            }
-          : prev
+        prev ? { ...prev, bank_transfer_details: bankTransferDraft } : prev
       );
       setBankTransferResult('Booking bank transfer details saved.');
     } catch (err) {
@@ -307,33 +272,60 @@ const AdminBookings: React.FC = () => {
     }
   };
 
+  // Update booking status using Supabase
   const saveStatus = async (bookId: string, explicitStatus?: string) => {
     const selectedStatus = explicitStatus || statusDrafts[bookId];
     if (!selectedStatus) return;
-
     setStatusSavingId(bookId);
     setStatusResult(null);
-
     try {
-      const res = await fetch('/api/bookings', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: bookId, status: selectedStatus }),
-      });
-
-      if (!res.ok) {
-        const errData = await res.json().catch(() => ({}));
-        throw new Error(errData?.error || 'Failed to update booking status');
-      }
-
-      const updatedBooking = await res.json();
-      setBookings((prev) => prev.map((booking) => (booking.id === bookId ? { ...booking, status: updatedBooking.status || selectedStatus } : booking)));
-      setStatusResult(`Status updated to ${updatedBooking.status || selectedStatus}.`);
+      const { data, error } = await supabase
+        .from('bookings')
+        .update({ status: selectedStatus })
+        .eq('id', bookId)
+        .select();
+      if (error) throw error;
+      setBookings((prev) => prev.map((booking) => (booking.id === bookId ? { ...booking, status: selectedStatus } : booking)));
+      setStatusResult(`Status updated to ${selectedStatus}.`);
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Failed to update booking status';
       setStatusResult(message);
     } finally {
       setStatusSavingId(null);
+    }
+  };
+
+  // Add booking using Supabase
+  const addBooking = async (booking: Partial<Booking>) => {
+    setLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from('bookings')
+        .insert([booking])
+        .select();
+      if (error) throw error;
+      setBookings((prev) => [data[0], ...prev]);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to add booking');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Delete booking using Supabase
+  const deleteBooking = async (id: string) => {
+    setLoading(true);
+    try {
+      const { error } = await supabase
+        .from('bookings')
+        .delete()
+        .eq('id', id);
+      if (error) throw error;
+      setBookings((prev) => prev.filter((b) => b.id !== id));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to delete booking');
+    } finally {
+      setLoading(false);
     }
   };
 
