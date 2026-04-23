@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin CMS Panel</title>
+  <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f8f8f8; margin: 0; }
+    .container { max-width: 900px; margin: 2rem auto; background: #fff; border-radius: 12px; box-shadow: 0 4px 24px #0070ba22; padding: 2rem; }
+    h1 { color: #0070ba; }
+    .hidden { display: none; }
+    label, select, input[type=password] { margin-bottom: 1em; display: block; }
+    #fileList { margin-bottom: 1em; }
+    #logoutBtn { float: right; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <button id="logoutBtn" class="hidden">Logout</button>
+    <h1>Admin CMS Panel</h1>
+    <div id="loginSection">
+      <label for="adminPass">Admin Password:</label>
+      <input type="password" id="adminPass" />
+      <button id="loginBtn">Login</button>
+      <div id="loginError" style="color:#c62828;"></div>
+    </div>
+    <div id="cmsSection" class="hidden">
+      <label for="fileList">Select Page to Edit:</label>
+      <select id="fileList"></select>
+      <textarea id="editor"></textarea>
+      <button id="saveBtn">Save Changes</button>
+      <div id="saveMsg"></div>
+    </div>
+  </div>
+  <script>
+    tinymce.init({ selector: '#editor', height: 500 });
+    let token = '';
+    document.getElementById('loginBtn').onclick = async function() {
+      const pass = document.getElementById('adminPass').value;
+      const res = await fetch('/api/cms/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: pass })
+      });
+      const data = await res.json();
+      if (data.success) {
+        token = data.token;
+        document.getElementById('loginSection').classList.add('hidden');
+        document.getElementById('cmsSection').classList.remove('hidden');
+        document.getElementById('logoutBtn').classList.remove('hidden');
+        loadFiles();
+      } else {
+        document.getElementById('loginError').textContent = 'Incorrect password.';
+      }
+    };
+    document.getElementById('logoutBtn').onclick = function() {
+      token = '';
+      document.getElementById('loginSection').classList.remove('hidden');
+      document.getElementById('cmsSection').classList.add('hidden');
+      document.getElementById('logoutBtn').classList.add('hidden');
+      document.getElementById('adminPass').value = '';
+    };
+    async function loadFiles() {
+      const res = await fetch('/api/cms/files?token=' + encodeURIComponent(token));
+      const files = await res.json();
+      const fileList = document.getElementById('fileList');
+      fileList.innerHTML = '';
+      files.forEach(f => {
+        const opt = document.createElement('option');
+        opt.value = f;
+        opt.textContent = f;
+        fileList.appendChild(opt);
+      });
+      if (files.length) loadFile(files[0]);
+      fileList.onchange = () => loadFile(fileList.value);
+    }
+    async function loadFile(filename) {
+      const res = await fetch('/api/cms/file?file=' + encodeURIComponent(filename) + '&token=' + encodeURIComponent(token));
+      const data = await res.json();
+      tinymce.get('editor').setContent(data.content || '');
+    }
+    document.getElementById('saveBtn').onclick = async function() {
+      const filename = document.getElementById('fileList').value;
+      const content = tinymce.get('editor').getContent();
+      const res = await fetch('/api/cms/save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token, file: filename, content })
+      });
+      const data = await res.json();
+      document.getElementById('saveMsg').textContent = data.success ? 'Saved!' : 'Save failed.';
+      setTimeout(() => { document.getElementById('saveMsg').textContent = ''; }, 2000);
+    };
+  </script>
+</body>
+</html>

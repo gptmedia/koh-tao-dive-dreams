@@ -24,6 +24,49 @@ app.all('/api/bookings', (req, res) => {
   }
 });
 
+
+// --- CMS ADMIN PANEL ENDPOINTS ---
+const fs = require('fs');
+const crypto = require('crypto');
+
+// --- CMS endpoints are now public, no password or token required ---
+// Dummy middleware for compatibility (does nothing)
+function checkToken(req, res, next) { next(); }
+
+// GET /api/cms/files
+app.get('/api/cms/files', checkToken, (req, res) => {
+  const publicDir = path.join(__dirname, 'public');
+  fs.readdir(publicDir, (err, files) => {
+    if (err) return res.status(500).json({ error: 'Failed to list files' });
+    const htmlFiles = files.filter(f => f.endsWith('.html'));
+    res.json(htmlFiles);
+  });
+});
+
+// GET /api/cms/file?file=...
+app.get('/api/cms/file', checkToken, (req, res) => {
+  const file = req.query.file;
+  if (!file) return res.status(400).json({ error: 'No file specified' });
+  const filePath = path.join(__dirname, 'public', file);
+  if (!filePath.startsWith(path.join(__dirname, 'public'))) return res.status(403).json({ error: 'Forbidden' });
+  fs.readFile(filePath, 'utf8', (err, data) => {
+    if (err) return res.status(404).json({ error: 'File not found' });
+    res.json({ content: data });
+  });
+});
+
+// POST /api/cms/save { file, content }
+app.post('/api/cms/save', checkToken, (req, res) => {
+  const { file, content } = req.body;
+  if (!file) return res.status(400).json({ error: 'No file specified' });
+  const filePath = path.join(__dirname, 'public', file);
+  if (!filePath.startsWith(path.join(__dirname, 'public'))) return res.status(403).json({ error: 'Forbidden' });
+  fs.writeFile(filePath, content, 'utf8', err => {
+    if (err) return res.status(500).json({ success: false });
+    res.json({ success: true });
+  });
+});
+
 app.listen(PORT, () => {
   console.log(`Minimal bookings API running at http://localhost:${PORT}`);
 });
