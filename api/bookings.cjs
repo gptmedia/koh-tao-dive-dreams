@@ -13,10 +13,23 @@ module.exports = (req, res) => {
   } else if (req.method === 'POST') {
     const { id, status, comments, ...rest } = req.body || {};
     if (!id) {
-      // CREATE new booking
-      // Accepts all fields in rest
-      const fields = Object.keys(rest);
-      const values = Object.values(rest);
+      // Map incoming fields from admin panel to DB columns
+      const booking = {
+        name: rest.name,
+        email: rest.email,
+        phone: rest.phone,
+        course_title: rest.course,
+        preferred_date: rest.date,
+        experience_level: rest.level,
+        message: rest.comments,
+        status: status || 'pending',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      };
+      // Remove undefined fields
+      Object.keys(booking).forEach(k => booking[k] === undefined && delete booking[k]);
+      const fields = Object.keys(booking);
+      const values = Object.values(booking);
       if (fields.length === 0) {
         return res.status(400).json({ error: 'No booking data provided' });
       }
