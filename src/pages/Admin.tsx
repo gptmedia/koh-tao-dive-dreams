@@ -1,7 +1,7 @@
 import AdminBookings from '../components/AdminBookings';
 import AdminPagesManager from '../components/AdminPagesManager';
 import AdminUsersManager from '../components/AdminUsersManager';
-import AffiliateClicksAdmin from '../components/AffiliateClicksAdmin';
+// import AffiliateClicksAdmin from '../components/AffiliateClicksAdmin';
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
