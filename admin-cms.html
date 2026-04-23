@@ -17,17 +17,15 @@
 </head>
 <body>
   <div class="container">
-    <button id="logoutBtn" class="hidden">Logout</button>
     <h1>Admin CMS Panel</h1>
-    <div id="loginSection">
-      <label for="adminPass">Admin Password:</label>
-      <input type="password" id="adminPass" />
-      <button id="loginBtn">Login</button>
-      <div id="loginError" style="color:#c62828;"></div>
-    </div>
-    <div id="cmsSection" class="hidden">
+    <div id="cmsSection">
       <label for="fileList">Select Page to Edit:</label>
       <select id="fileList"></select>
+      <div style="margin: 1em 0;">
+        <input type="text" id="newPageName" placeholder="New page name (e.g. about.html)" style="width: 250px;" />
+        <button id="createPageBtn">Add Page</button>
+        <span id="createMsg" style="color:#c62828;"></span>
+      </div>
       <textarea id="editor"></textarea>
       <button id="saveBtn">Save Changes</button>
       <div id="saveMsg"></div>
@@ -35,34 +33,12 @@
   </div>
   <script>
     tinymce.init({ selector: '#editor', height: 500 });
-    let token = '';
-    document.getElementById('loginBtn').onclick = async function() {
-      const pass = document.getElementById('adminPass').value;
-      const res = await fetch('/api/cms/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ password: pass })
-      });
-      const data = await res.json();
-      if (data.success) {
-        token = data.token;
-        document.getElementById('loginSection').classList.add('hidden');
-        document.getElementById('cmsSection').classList.remove('hidden');
-        document.getElementById('logoutBtn').classList.remove('hidden');
-        loadFiles();
-      } else {
-        document.getElementById('loginError').textContent = 'Incorrect password.';
-      }
-    };
-    document.getElementById('logoutBtn').onclick = function() {
-      token = '';
-      document.getElementById('loginSection').classList.remove('hidden');
-      document.getElementById('cmsSection').classList.add('hidden');
-      document.getElementById('logoutBtn').classList.add('hidden');
-      document.getElementById('adminPass').value = '';
-    };
-    async function loadFiles() {
-      const res = await fetch('/api/cms/files?token=' + encodeURIComponent(token));
+    // No login required, load CMS immediately
+    window.addEventListener('DOMContentLoaded', () => {
+      loadFiles();
+    });
+    async function loadFiles(selectFile) {
+      const res = await fetch('/api/cms/files');
       const files = await res.json();
       const fileList = document.getElementById('fileList');
       fileList.innerHTML = '';
@@ -72,11 +48,41 @@
         opt.textContent = f;
         fileList.appendChild(opt);
       });
-      if (files.length) loadFile(files[0]);
+      if (files.length) {
+        if (selectFile && files.includes(selectFile)) {
+          fileList.value = selectFile;
+          loadFile(selectFile);
+        } else {
+          loadFile(files[0]);
+        }
+      }
       fileList.onchange = () => loadFile(fileList.value);
     }
+        document.getElementById('createPageBtn').onclick = async function() {
+          const name = document.getElementById('newPageName').value.trim();
+          const msg = document.getElementById('createMsg');
+          msg.textContent = '';
+          if (!name.endsWith('.html')) {
+            msg.textContent = 'Page name must end with .html';
+            return;
+          }
+          const res = await fetch('/api/cms/create', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ file: name, content: '' })
+          });
+          const data = await res.json();
+          if (data.success) {
+            document.getElementById('newPageName').value = '';
+            await loadFiles(name);
+            msg.textContent = 'Page created!';
+            setTimeout(() => { msg.textContent = ''; }, 2000);
+          } else {
+            msg.textContent = data.error || 'Failed to create page.';
+          }
+        };
     async function loadFile(filename) {
-      const res = await fetch('/api/cms/file?file=' + encodeURIComponent(filename) + '&token=' + encodeURIComponent(token));
+      const res = await fetch('/api/cms/file?file=' + encodeURIComponent(filename));
       const data = await res.json();
       tinymce.get('editor').setContent(data.content || '');
     }
@@ -86,7 +92,7 @@
       const res = await fetch('/api/cms/save', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token, file: filename, content })
+        body: JSON.stringify({ file: filename, content })
       });
       const data = await res.json();
       document.getElementById('saveMsg').textContent = data.success ? 'Saved!' : 'Save failed.';

@@ -1,3 +1,15 @@
+// POST /api/cms/create { file, content }
+app.post('/api/cms/create', checkToken, (req, res) => {
+  const { file, content } = req.body;
+  if (!file || !file.endsWith('.html')) return res.status(400).json({ error: 'Invalid file name' });
+  const filePath = path.join(__dirname, 'public', file);
+  if (!filePath.startsWith(path.join(__dirname, 'public'))) return res.status(403).json({ error: 'Forbidden' });
+  if (fs.existsSync(filePath)) return res.status(409).json({ error: 'File already exists' });
+  fs.writeFile(filePath, content || '', 'utf8', err => {
+    if (err) return res.status(500).json({ success: false });
+    res.json({ success: true });
+  });
+});
 // Minimal Express server for /api/bookings (SQLite only, no Supabase/Stripe)
 const express = require('express');
 const bodyParser = require('body-parser');
