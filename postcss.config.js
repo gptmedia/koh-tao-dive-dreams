@@ -7,4 +7,8 @@ export default {
     autoprefixer(),
   ],
 };
+<<<<<<< Updated upstream
 //
+=======
+// 
+>>>>>>> Stashed changes
