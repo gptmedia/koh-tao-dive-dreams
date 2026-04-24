@@ -11,13 +11,13 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 // Remove static sectionKeyList, use dynamic fetching
 
 const Admin = () => {
-    // Tab navigation UI
-    // Add more admin tabs here
-    const tabs = [
-      { key: 'bookings', label: 'Bookings' },
-      { key: 'pages', label: 'Pages Manager' },
-      { key: 'project-manager', label: 'Project Manager' },
-    ];
+  // Tab navigation UI
+  // Add more admin tabs here
+  const tabs = [
+    { key: 'bookings', label: 'Bookings' },
+    { key: 'pages', label: 'Pages Manager' },
+    { key: 'project-manager', label: 'Project Manager' },
+  ];
   const jiraEmbedUrl = import.meta.env.VITE_JIRA_EMBED_URL || '';
   const jiraProjectUrl = import.meta.env.VITE_JIRA_PROJECT_URL || jiraEmbedUrl || 'https://divinginasia.atlassian.net';
   const [activeTab, setActiveTab] = useState('bookings');
@@ -156,11 +156,11 @@ const Admin = () => {
   return (
 
 
-  <div className="min-h-[80vh] pt-[10px] bg-gradient-to-br from-blue-50 to-emerald-50">
-    <header className="w-full py-8 mb-8 bg-gradient-to-r from-blue-700 to-emerald-600 shadow-lg text-white rounded-b-3xl flex flex-col items-center">
-      <h1 className="text-3xl font-bold tracking-wide mb-2">Admin Dashboard</h1>
-      <p className="text-lg opacity-80">Manage bookings, pages, and more</p>
-    </header>
+    <div className="min-h-[80vh] pt-[10px] bg-gradient-to-br from-blue-50 to-emerald-50">
+      <header className="w-full py-8 mb-8 bg-gradient-to-r from-blue-700 to-emerald-600 shadow-lg text-white rounded-b-3xl flex flex-col items-center">
+        <h1 className="text-3xl font-bold tracking-wide mb-2">Admin Dashboard</h1>
+        <p className="text-lg opacity-80">Manage bookings, pages, and more</p>
+      </header>
       {/* Centered horizontal tab row with more spacing */}
       <div className="flex flex-col items-center mb-8">
         <nav className="flex flex-row gap-6 justify-center">

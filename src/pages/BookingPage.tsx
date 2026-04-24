@@ -182,23 +182,11 @@ const       BookingPage: React.FC = () => {
       const amountMajor = (isStayBooking ? 0 : depositMajor) + totalAddons;
       const selectedAddonsList = isDiveBooking
         ? availableAddons.filter((addon) => selectedAddons[addon.id]).map((addon) => ({
-            return (
-              <div className="min-h-screen flex items-center justify-center bg-background py-16">
-                <div className="max-w-xl mx-auto bg-white rounded-xl shadow-xl shadow-blue-900/20 p-10 text-center border border-blue-200">
-                  <h1 className="text-3xl font-bold mb-4">Bookings are now handled at our new booking portal</h1>
-                  <p className="text-lg mb-6">To book a course, fun dive, or accommodation, please use our dedicated booking site. This page is no longer accepting bookings.</p>
-                  <a
-                    href="https://your-new-booking-portal.example.com"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-block mt-4 px-8 py-3 bg-blue-700 text-white rounded-lg text-lg font-semibold shadow hover:bg-blue-800 transition"
-                  >
-                    Go to Booking Portal
-                  </a>
-                </div>
-              </div>
-            );
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+            id: addon.id,
+            label: addon.label,
+            amount: addon.amount,
+          }))
+        : [];
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Select your experience level" />
