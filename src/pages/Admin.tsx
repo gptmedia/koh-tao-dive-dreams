@@ -1,7 +1,6 @@
 import AdminBookings from '../components/AdminBookings';
 import AdminPagesManager from '../components/AdminPagesManager';
 import AdminUsersManager from '../components/AdminUsersManager';
-// import AffiliateClicksAdmin from '../components/AffiliateClicksAdmin';
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -16,7 +15,6 @@ const Admin = () => {
     // Add more admin tabs here
     const tabs = [
       { key: 'bookings', label: 'Bookings' },
-      { key: 'affiliate-clicks', label: 'Affiliate Clicks' },
       { key: 'pages', label: 'Pages Manager' },
       { key: 'project-manager', label: 'Project Manager' },
     ];
@@ -169,7 +167,7 @@ const Admin = () => {
           {tabs.map(tab => (
             <button
               key={tab.key}
-              className={`px-7 py-3 text-base font-semibold rounded-lg transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:z-10 ${activeTab === tab.key ? 'bg-blue-600 text-white shadow' : 'bg-transparent text-gray-700 hover:bg-blue-100'}`}
+              className={`px-7 py-3 text-base font-semibold rounded-lg transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:z-10 ${activeTab === tab.key ? 'bg-blue-600 text-white shadow-lg' : 'bg-white text-gray-700 hover:bg-gray-100'}`}
               onClick={() => setActiveTab(tab.key)}
               style={{ minWidth: 160 }}
             >
@@ -249,11 +247,6 @@ const Admin = () => {
           {activeTab === 'bookings' && (
             <div className="bg-white rounded-2xl shadow-xl p-6 mb-6 border border-gray-100">
               <AdminBookings />
-            </div>
-          )}
-          {activeTab === 'affiliate-clicks' && (
-            <div className="bg-white rounded-2xl shadow-xl p-6 mb-6 border border-gray-100">
-              <AffiliateClicksAdmin />
             </div>
           )}
           {activeTab === 'pages' && (
