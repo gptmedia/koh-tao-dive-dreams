@@ -187,20 +187,21 @@ const       BookingPage: React.FC = () => {
             amount: addon.amount,
           }))
         : [];
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select your experience level" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value="none">No diving experience</SelectItem>
-                    <SelectItem value="beginner">Beginner (1-10 dives)</SelectItem>
-                    <SelectItem value="intermediate">Intermediate (10-50 dives)</SelectItem>
-                    <SelectItem value="advanced">Advanced (50+ dives)</SelectItem>
-                    <SelectItem value="professional">Professional diver</SelectItem>
-                  </SelectContent>
-                </Select>
-                <FormMessage />
+                  <Select>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select your experience level" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="none">No diving experience</SelectItem>
+                      <SelectItem value="beginner">Beginner (1-10 dives)</SelectItem>
+                      <SelectItem value="intermediate">Intermediate (10-50 dives)</SelectItem>
+                      <SelectItem value="advanced">Advanced (50+ dives)</SelectItem>
+                      <SelectItem value="professional">Professional diver</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
               </FormItem>
             )} />
 
@@ -289,44 +290,42 @@ const       BookingPage: React.FC = () => {
         )}
       </div>
 
-      <AlertDialog open={showStayPopup} onOpenChange={setShowStayPopup}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>{isCourseBooking ? 'Accommodation Included' : 'Accommodation Request Noted'}</AlertDialogTitle>
-            <AlertDialogDescription>
-              {isCourseBooking
-                ? 'Accommodation free with us for courses.'
-                : 'Deposit payable now for your dives and accommodation total pricing to be confirmed. Please leave details in the form below and we will contact to confirm your total amount payable on arrival or deposit before arriving.'}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogAction>OK</AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-
-      <AlertDialog
-        open={showSkipPaymentPopup}
-        onOpenChange={(open) => {
-          setShowSkipPaymentPopup(open);
-          if (!open) {
-            form.reset();
-          }
-        }}
-      >
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Inquiry Sent</AlertDialogTitle>
-            <AlertDialogDescription>{SKIP_PAYMENT_MESSAGE}</AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogAction onClick={() => {
+      <><AlertDialog open={showStayPopup} onOpenChange={setShowStayPopup}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>{isCourseBooking ? 'Accommodation Included' : 'Accommodation Request Noted'}</AlertDialogTitle>
+              <AlertDialogDescription>
+                {isCourseBooking
+                  ? 'Accommodation free with us for courses.'
+                  : 'Deposit payable now for your dives and accommodation total pricing to be confirmed. Please leave details in the form below and we will contact to confirm your total amount payable on arrival or deposit before arriving.'}
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogAction>OK</AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog><AlertDialog
+          open={showSkipPaymentPopup}
+          onOpenChange={(open) => {
+            setShowSkipPaymentPopup(open);
+            if (!open) {
               form.reset();
-              setShowSkipPaymentPopup(false);
-            }}>OK</AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+            }
+          } }
+        >
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Inquiry Sent</AlertDialogTitle>
+                <AlertDialogDescription>{SKIP_PAYMENT_MESSAGE}</AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogAction onClick={() => {
+                  form.reset();
+                  setShowSkipPaymentPopup(false);
+                } }>OK</AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog></>
     </div>
   );
 };
